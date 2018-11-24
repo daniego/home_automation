@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  web:
+    hostname: service
+    container_name: service
+    build: .
+    command: /home_automation/entrypoint.sh
+    volumes:
+      # - .:/home_automation
+      - /dev/bus/usb:/dev/bus/usb
+    ports:
+      - "80:5000"
+    privileged: true
+# docker run -it --privileged -v /dev/bus/usb:/dev/bus/usb -v /my_project_repos/kalliope_starter_en:/starter kalliope bash

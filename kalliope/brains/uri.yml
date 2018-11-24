@@ -1,0 +1,23 @@
+---
+  - name: "horoscope-scorpio"
+    signals:
+      - order: "what is my horoscope today"
+    neurons:
+      - say:
+          message: "Scorpio horoscope of the day"
+      - uri:
+          url: "http://theastrologer-api.herokuapp.com/api/horoscope/scorpio/today"
+          method: GET
+          say_template:
+              - "{{ content.horoscope }}"
+
+  - name: "wikipedia-search"
+    signals:
+      # - order: "look on wikipedia {{ query }}"
+      - order: "look for {{ query }}"
+    neurons:
+      - wikipedia_searcher:
+          language: "en"
+          query: "{{ query }}"
+          file_template: "templates/wikipedia_search.j2"
+          # file_template: "wikipedia_returned_value.j2"
