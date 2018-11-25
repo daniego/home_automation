@@ -3,8 +3,10 @@
   - includes:
         - brains/say.yml
         - brains/systemdate.yml
-        - brains/neurotransmitter.yml
+        # - brains/neurotransmitter.yml
         - brains/uri.yml
+        - brains/wikipedia.yml
+        - brains/release.yml
 
   - name: "order-not-found-synapse"
     signals: []

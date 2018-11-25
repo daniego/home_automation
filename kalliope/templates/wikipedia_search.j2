@@ -1,9 +1,10 @@
 {% if returncode == "DisambiguationError" %}
-    The query match following pages
+    The query match following pages {% if titles %}limited to {{ titles }} results{% endif %}
     {% if may_refer is not none %}
         {% for page in may_refer %}
             {{ page }}
         {% endfor %}
+        {% if titles %}Please redifine you search to get a more accurate result{% endif %}
     {% endif %}
 {% elif returncode == "PageError" %}
     I haven't  found anything on this

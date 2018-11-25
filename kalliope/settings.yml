@@ -16,8 +16,9 @@ default_trigger: "snowboy"
 triggers:
   - snowboy:
       pmdl_file: "trigger/kalliope-EN-12samples.pmdl"
-
-
+      sensitivity: 0.6
+  # - mytrigger:
+  #     order: "baby"
 # ---------------------------
 # Speech to text
 # ---------------------------
@@ -142,6 +143,7 @@ resource_directory:
 # ---------------------------
 var_files:
   - global_variables/variables.yml
+  - global_variables/secrets.yaml
 #  - variables2.yml
 
 # -------------

@@ -1,0 +1,142 @@
+---
+
+  # - name: "synapse5"
+  #   signals:
+  #     - order: "give me the weather"
+  #   neurons:
+  #     - say:
+  #         message: "which town ?"
+  #     - neurotransmitter:
+  #         from_answer_link:
+  #           - synapse: "synapse6"
+  #             answers:
+  #               - "the weather in {{ location }}"
+  #
+  # - name: "synapse6"
+  #   signals:
+  #     - order: "What is the weather in {{ location }}"
+  #   neurons:
+  #     - openweathermap:
+  #         api_key: "your-api"
+  #         lang: "fr"
+  #         temp_unit: "celsius"
+  #         country: "FR"
+  #         location: "{{ location }}"
+  #         say_template:
+  #         - "Today in {{ location }} the weather is {{ weather_today }} with {{ temp_today_temp }} celsius"
+  - name: "synapse-01"
+    signals:
+      - order: "my friend is {{ myfriend }}"
+    neurons:
+      - say:
+          message:
+            - "ok, your friend is {{ myfriend }}"
+          kalliope_memory:
+            friend: "{{ myfriend }}"
+      - neurotransmitter:
+          from_answer_link:
+            - synapse: "synapse2"
+              answers:
+                - "absolutely"
+                - "maybe"
+                - 'kb'
+
+            - synapse: "synapse3"
+              answers:
+                - "no at all"
+          default: "synapse4"
+
+  - name: "synapse-02"
+    signals:
+      - order: "repeat the name"
+    neurons:
+      - say:
+          message:
+            - "It's {{ kalliope_memory['friend'] }}"
+
+  - name: "release"
+    signals:
+      - order: "deploy {{ environment }}"
+    neurons:
+      - say:
+          message:
+            - "Which environment kb or dr {{ environment }}"
+          kalliope_memory:
+            mynewvar: "longer mynewvar"
+            friend: "{{ environment }}"
+
+
+  - name: "synapse4"
+    signals:
+      - order: "jellyfish"
+    neurons:
+      - say:
+          message:
+            - "You asked for {{ kalliope_memory['mynewvar'] }} and the other variable is {{ kalliope_memory['friend'] }}"
+
+
+      # - neurotransmitter:
+      #     from_answer_link:
+      #       - synapse: "synapse2"
+      #         answers:
+      #           - "absolutely"
+      #           - "maybe"
+      #           - 'kb'
+      #
+      #       - synapse: "synapse3"
+      #         answers:
+      #           - "no at all"
+      #     default: "synapse4"
+
+  - name: "synapse2"
+    signals:
+      - order: "synapse2"
+    neurons:
+      - say:
+          message: "You {{ kalliope_memory['foobar'] }} like french fries!!  Me too! I suppose..."
+
+  - name: "synapse3"
+    signals:
+      - order: "synapse3"
+    neurons:
+      - say:
+          message: "You don't like french fries. It's ok."
+
+
+  # - name: "release"
+  #   signals:
+  #     - order: "deploy"
+  #   neurons:
+  #         direct_link: "synapse-1"
+  #
+  # - name: "synapse-1"
+  #   signals:
+  #     - order: "synapse-direct-link-1"
+  #   neurons:
+  #     - say:
+  #         message: "Synapse 1 launched"
+    #       signals:
+    #         - order: "{{ environment }}"
+    # neurons:
+    #   - say:
+    #       message: "Deploying on {{ environment }}"
+    #   - uri:
+    #       url: "http://theastrologer-api.herokuapp.com/api/horoscope/scorpio/today"
+    #       method: GET
+    #       say_template:
+    #           - "{{ content.horoscope }}"
+    #
+    # #
+    # # neurons:
+    # #   - say:
+    # #       message: "do you like french fries?"
+    # #   - neurotransmitter:
+    # #       from_answer_link:
+    # #         - synapse: "synapse2"
+    # #           answers:
+    # #             - "absolutely"
+    # #             - "of course"
+
+
+
+# Hello, if we consider the classic 'do you like french fries?' neurotransmitter, how do I get answer inside synapse4 in order to have a message like "{{ my_answer }} is not a valid answer"?

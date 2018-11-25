@@ -7,7 +7,7 @@ services:
     build: .
     command: /home_automation/entrypoint.sh
     volumes:
-      # - .:/home_automation
+      - .:/home_automation
       - /dev/bus/usb:/dev/bus/usb
     ports:
       - "80:5000"
