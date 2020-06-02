@@ -24,46 +24,142 @@
   #         location: "{{ location }}"
   #         say_template:
   #         - "Today in {{ location }} the weather is {{ weather_today }} with {{ temp_today_temp }} celsius"
-  - name: "synapse-01"
+  - name: "test-stt-1"
     signals:
-      - order: "my friend is {{ myfriend }}"
+      - order: "Testing"
     neurons:
       - say:
           message:
-            - "ok, your friend is {{ myfriend }}"
-          kalliope_memory:
-            friend: "{{ myfriend }}"
+            - "Place your order"
       - neurotransmitter:
           from_answer_link:
-            - synapse: "synapse2"
+            - synapse: "test-stt-2"
               answers:
-                - "absolutely"
-                - "maybe"
-                - 'kb'
+                - 'foo'
+                - 'bar'
+                - 'jellyfish'
 
-            - synapse: "synapse3"
-              answers:
-                - "no at all"
-          default: "synapse4"
+          default: "test-stt-default"
 
-  - name: "synapse-02"
+
+  - name: "test-stt-2"
     signals:
-      - order: "repeat the name"
+      - order: "test-stt-2"
     neurons:
       - say:
           message:
-            - "It's {{ kalliope_memory['friend'] }}"
+            - "Last order is {{ kalliope_memory['kalliope_last_order'] }} and environment is {{ kalliope_memory['environment'] }}"
 
-  - name: "release"
+  - name: "test-stt-default"
     signals:
-      - order: "deploy {{ environment }}"
+      - order: "test-stt-default"
     neurons:
       - say:
           message:
-            - "Which environment kb or dr {{ environment }}"
+            - "Test defaults and last order is {{ kalliope_memory['kalliope_last_order'] }}"
+  # - name: "test-stt-1"
+  #   signals:
+  #     - order: "Testing {{ order_var }}"
+  #   neurons:
+  #     - say:
+  #         message:
+  #           - "Testing is ordering {{ order_var }}"
+  #         kalliope_memory:
+  #           mynewvar: "longer mynewvar"
+  #           friend: "{{ order_var }}"
+  #           # from_answer: "{{ kalliope_memory['kalliope_last_order'] }}"
+  #     - neurotransmitter:
+  #         from_answer_link:
+  #           - synapse: "test-stt-2"
+  #             answers:
+  #               - 'foo'
+  #               - 'bar'
+  #         default: "test-stt-2"
+  #
+  # - name: "test-stt-2"
+  #   signals:
+  #     - order: "test-stt-2"
+  #   neurons:
+  #     - say:
+  #         message:
+  #           # - "The testing var is {{ order_var | default('unset') }}, my new var is {{ kalliope_memory['test_var'] | default('unset') }} "
+  #           - "My new var is {{ kalliope_memory['mynewvar'] | default('unset') }} and friend is {{ kalliope_memory['friend'] | default('unset')}} and memory is {{ kalliope_memory }}"
+
+# The testing var is unset, my new var is unset and friend is drone and memory is {'mynewvar': 'longer mynewvar', 'kalliope_last_order': u'testing drone', 'kalliope_last_stt_message': u'testing drone', 'friend': u'drone', 'kalliope_last_tts_message': 'Testing is ordering drone'}
+
+# The testing var is unset, my new var is unset and friend is unset and memory is {'mynewvar': 'longer mynewvar', 'kalliope_last_order': u'testing John', 'kalliope_last_stt_message': u'testing John', 'kalliope_last_stt_message': 'Testing is ordering John'}
+
+  - name: "deploy-environment"
+    signals:
+      - order: "deploy"
+    neurons:
+      - say:
+          message:
+            - "Where?"
+            # - "On which environment? production, disaster recovery or staging"
+      - neurotransmitter:
+          from_answer_link:
+            - synapse: "deploy-service"
+              answers:
+                - 'production'
+                - 'disaster recovery'
+                - 'staging'
+          default: "deploy-do-not-understood"
           kalliope_memory:
-            mynewvar: "longer mynewvar"
-            friend: "{{ environment }}"
+            aaa: "before_key {{ kalliope_memory['kalliope_last_order'] }} after_key"
+  - name: "deploy-service"
+    signals:
+      - order: "deploy-service"
+    neurons:
+      - say:
+          message:
+            - "{{ kalliope_memory }}Which service are you looking to deploy on {{ kalliope_memory['kalliope_last_order'] }}"
+
+      - neurotransmitter:
+          from_answer_link:
+            - synapse: "deploy-version"
+              answers:
+                  - 'londres'
+          default: "deploy-do-not-understood"
+          kalliope_memory:
+            environment: "{{ kalliope_memory['kalliope_last_order'] }}"
+
+  - name: "deploy-version"
+    signals:
+      - order: "deploy-version"
+    neurons:
+      - say:
+          message:
+            - "Which version of {{ kalliope_memory['service'] }} you want to deploy to {{ kalliope_memory['environment'] }}"
+          kalliope_memory:
+            version: "{{ kalliope_memory['kalliope_last_order'] }}"
+      - neurotransmitter:
+          from_answer_link:
+            - synapse: "deploy-action"
+              answers:
+                - "default"
+          default: "deploy-do-not-understood"
+
+  - name: "deploy-action"
+    signals:
+      - order: "deploy-action"
+    neurons:
+      - say:
+          message:
+            - "OK, deploying {{ kalliope_memory['service'] }} version {{ kalliope_memory['version'] }} to {{ kalliope_memory['environment'] }}"
+      - uri:
+          url: "http://ansible-tower.dummy.com/today"
+          method: POST
+          say_template:
+              - "{{ content.deploy_template }}"
+
+  - name: "deploy-do-not-understood"
+    signals:
+      - order: "deploy-do-not-understood"
+    neurons:
+      - say:
+          message:
+            - "Sorry I can't release with the parsed values"
 
 
   - name: "synapse4"
@@ -72,7 +168,7 @@
     neurons:
       - say:
           message:
-            - "You asked for {{ kalliope_memory['mynewvar'] }} and the other variable is {{ kalliope_memory['friend'] }}"
+            - "{{ kalliope_memory }} You asked for {{ kalliope_memory['mynewvar'] }} and the other variable is {{ kalliope_memory['friend'] }}"
 
 
       # - neurotransmitter:
@@ -102,7 +198,35 @@
       - say:
           message: "You don't like french fries. It's ok."
 
+  - name: "synapse-01"
+    signals:
+      - order: "my friend is {{ myfriend }}"
+    neurons:
+      - say:
+          message:
+            - "ok, your friend is {{ myfriend }}"
+          kalliope_memory:
+            friend: "{{ myfriend }}"
+      - neurotransmitter:
+          from_answer_link:
+            - synapse: "synapse2"
+              answers:
+                - "absolutely"
+                - "maybe"
+                - 'kb'
 
+            - synapse: "synapse3"
+              answers:
+                - "no at all"
+          default: "synapse4"
+
+  - name: "synapse-02"
+    signals:
+      - order: "repeat the name"
+    neurons:
+      - say:
+          message:
+            - "It's {{ kalliope_memory['friend'] }}"
   # - name: "release"
   #   signals:
   #     - order: "deploy"

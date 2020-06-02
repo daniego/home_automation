@@ -1,5 +1,7 @@
 #!/bin/bash
 
+apt install curl -y
+
 export PATH=$PATH:/marytts
 
 cd /marytts && marytts server &

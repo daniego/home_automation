@@ -25,6 +25,7 @@ triggers:
 
 # This is the STT that will be used by default
 default_speech_to_text: "google"
+# default_speech_to_text: "cmusphinx"
 
 # Spreech to Text engines configuration
 # Available engine are:
@@ -37,7 +38,12 @@ default_speech_to_text: "google"
 speech_to_text:
   - google:
       language: "en-EN"
-
+  - cmusphinx:
+      language: "en-US"
+      keyword_entries:
+        # - ["hello", 0.8]
+        - ["deploy", 0.8]
+        - ["stop the music", 0.6]
 # ---------------------------
 # Text to speech
 # ---------------------------

@@ -23,8 +23,7 @@ RUN apt-get update && apt-get install -y \
     mplayer \
     wget \
     vim \
-    default-jre \
-    curl && \
+    default-jre && \
     rm -rf /var/lib/apt/lists/*
 
 # Install the last PIP
@@ -39,27 +38,23 @@ RUN ./marytts dfki-prudence
 # RUN ./marytts cmu-rms && marytts cmu-rms-hsmm && marytts dfki-obadiah && marytts dfki-prudence
 # docker run -it --privileged -v /dev/bus/usb:/dev/bus/usb -v /my_project_repos/kalliope_starter_en:/starter kalliope bash
 
-
+COPY . /home_automation
+WORKDIR /home_automation
 # RUN apt update && apt install curl mysql-client net-tools swig libpulse-dev sphinxsearch -y
 # RUN pip install -r kalliope/requirements.txt
 
 
-RUN apt update && apt install zip gcc make pkg-config automake libtool libpcre2-dev -y
-# wine
-WORKDIR /home_automation/
-RUN git clone https://github.com/MycroftAI/mimic.git
-WORKDIR /home_automation/mimic
-RUN ./dependencies.sh --prefix="/usr/local"
-RUN ./autogen.sh
-RUN ./configure --prefix="/usr/local"
-RUN make
-RUN make check
+# RUN apt update && apt install zip gcc make pkg-config automake libtool libpcre2-dev binutils-mingw-w64-i686 mingw-w64-i686-dev  gcc-mingw-w64-i686 -y
+# # wine
+# RUN git clone https://github.com/MycroftAI/mimic.git
+# WORKDIR /home_automation/mimic
+# RUN ./dependencies.sh --prefix="/usr/local"
+# RUN ./autogen.sh
+# RUN ./configure --prefix="/usr/local"
+# RUN make
+# RUN make check
 
-COPY . /home_automation
-WORKDIR /home_automation
 
-RUN apt install curl -y
-RUN ls -la
-run ls -la kalliope
+RUN apt update && apt install curl -y
 # RUN apt update && apt install curl mysql-client net-tools swig libpulse-dev sphinxsearch -y
 RUN pip install -r kalliope/requirements.txt
