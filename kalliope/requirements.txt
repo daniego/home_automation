@@ -40,7 +40,7 @@ idna==2.7
 ipaddress==1.0.22
 itsdangerous==1.1.0
 jdcal==1.4
-Jinja2==2.10
+Jinja2==2.11.3
 jsonschema==2.6.0
 #kalliope==0.5.2.1
 logging-helper==1.8.5
