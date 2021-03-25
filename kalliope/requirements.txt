@@ -62,7 +62,7 @@ pyasn1==0.4.4
 #pyparsing==2.3.0
 #pyperclip==1.7.0
 #pytz==2018.7
-PyYAML==3.13
+PyYAML==5.4
 requests==2.20.1
 ruamel.ordereddict==0.4.13
 ruamel.yaml==0.15.79
