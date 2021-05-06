@@ -23,7 +23,7 @@ enum34==1.1.6
 et-xmlfile==1.0.1
 fdutil==1.13.0
 Flask==1.0.2
-Flask-Cors==3.0.7
+Flask-Cors==3.0.9
 Flask-RESTful==0.3.6
 Flask-Testing==0.7.1
 funcsigs==1.0.2
